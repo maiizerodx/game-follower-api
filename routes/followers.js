@@ -1,31 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const { authenticateToken } = require('../middleware/auth');
 
 const { getTwitterFollowers } = require('../scrapers/twitter');
 const { getSteamFollowers } = require('../scrapers/steam');
 const { getRedditFollowers } = require('../scrapers/reddit');
 const { getFacebookFollowers } = require('../scrapers/facebook');
 
-// router.get('/', async (req, res) => {
-//   const { game, developer } = req.query;
-
-//   const [twitter, steam, reddit, facebook] = await Promise.all([
-//     // getTwitterFollowers(game, developer),
-//     // getSteamFollowers(game, developer),
-//     getRedditFollowers(game, developer),
-//     // getFacebookFollowers(game, developer)
-//   ]);
-
-//   res.json({
-//     game,
-//     developer,
-//     social_media: { Twitter: twitter, Steam: steam, Reddit: reddit, Facebook: facebook }
-//   });
-// });
+// Apply authentication middleware to all follower routes
+router.use(authenticateToken);
 
 // Route to get followers for a specific platform 
 // by specifying the platform name and account name
-
 router.get('/:platform', async (req, res) => {
   const { account } = req.query;
   const { platform } = req.params;
