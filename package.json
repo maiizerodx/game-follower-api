@@ -13,5 +13,8 @@
     "express-rate-limit": "^7.5.0",
     "jsonwebtoken": "^9.0.2",
     "puppeteer": "^22.8.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

@@ -6,11 +6,22 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRY = process.env.JWT_EXPIRY || '24h';
 
-// For simplicity, we're using static credentials
-// In a real app, you'd verify against a database
-const VALID_USERS = [
-  { id: 1, username: 'admin', password: 'admin123' }
-];
+// Get user credentials from environment variables
+const getValidUsers = () => {
+  // Make sure we have the required environment variables
+  if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD) {
+    console.error('Admin credentials are not defined in environment variables');
+    return [];
+  }
+  
+  return [
+    { 
+      id: 1, 
+      username: process.env.ADMIN_USERNAME, 
+      password: process.env.ADMIN_PASSWORD 
+    }
+  ];
+};
 
 // Login route to get authentication token
 router.post('/login', (req, res) => {
@@ -21,8 +32,15 @@ router.post('/login', (req, res) => {
     return res.status(400).json({ error: 'Username and password are required' });
   }
   
+  // Get valid users from environment variables
+  const validUsers = getValidUsers();
+  
+  if (validUsers.length === 0) {
+    return res.status(500).json({ error: 'Server configuration error' });
+  }
+  
   // Find user with matching credentials
-  const user = VALID_USERS.find(
+  const user = validUsers.find(
     u => u.username === username && u.password === password
   );
   
