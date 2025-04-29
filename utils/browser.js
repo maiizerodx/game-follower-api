@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium-min');
 const fs = require('fs');
 
 /**
@@ -6,35 +7,24 @@ const fs = require('fs');
  * @returns {Object} Browser launch options
  */
 const getBrowserOptions = async () => {
-  // Check if running on Vercel
-  const isVercel = process.env.VERCEL === '1';
+  // Check if we're in a Vercel serverless environment
+  const isVercel = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_VERSION;
   
   if (isVercel) {
-    // For Vercel serverless environment
-    let chromium;
-    try {
-      chromium = require('@sparticuz/chromium-min');
-      return {
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(),
-        headless: true
-      };
-    } catch (err) {
-      console.error('Error loading chromium-min in Vercel:', err);
-      throw new Error('Failed to initialize browser in serverless environment');
-    }
-  } else {
-    // For local development
-    const executablePath = 
-      process.env.PUPPETEER_EXECUTABLE_PATH || 
-      findChromePath();
-      
+    await chromium.font();
     return {
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      defaultViewport: { width: 1280, height: 800 },
-      executablePath,
-      headless: true
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
+    };
+  } else {
+    // Local development configuration
+    return {
+      args: ['--no-sandbox'],
+      executablePath: process.env.CHROME_PATH || '/usr/bin/chromium-browser',
+      headless: 'new',
     };
   }
 };

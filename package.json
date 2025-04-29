@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@sparticuz/chromium": "^133.0.0",
-    "@sparticuz/chromium-min": "^133.0.0",
+    "@sparticuz/chromium-min": "^118.0.0",
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.5.0",
@@ -15,7 +15,7 @@
     "express-rate-limit": "^7.5.0",
     "jsonwebtoken": "^9.0.2",
     "puppeteer": "^22.15.0",
-    "puppeteer-core": "^24.7.2"
+    "puppeteer-core": "^21.0.0"
   },
   "engines": {
     "node": ">=14.0.0"
